@@ -16,7 +16,7 @@ const Orders: React.FC = () => {
       <h1 className="text-3xl font-display font-bold text-light-primary mb-8">Gestion des Commandes</h1>
 
       <div className="bg-dark-secondary rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto ml-4">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-dark-primary">

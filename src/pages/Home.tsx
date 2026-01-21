@@ -61,7 +61,7 @@ export default function Home({ onNavigate }: HomeProps) {
           </button>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce flex flex-col justify-center items-center space-y-2">
+        <div className="absolute bottom-8 transform -translate-x-1/2 animate-bounce flex flex-col justify-center items-center space-y-2">
           <div className="text-gold text-sm font-medium">SCROLL</div>
           <div className="w-6 h-10 border-2 border-gold/50 rounded-full flex items-start justify-center p-2">
             <div className="w-1 h-3 bg-gold rounded-full"></div>

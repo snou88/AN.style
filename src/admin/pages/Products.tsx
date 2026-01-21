@@ -22,7 +22,7 @@ const Products: React.FC = () => {
       </div>
 
       <div className="bg-dark-secondary rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto ml-4">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-dark-primary">
