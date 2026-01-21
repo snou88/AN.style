@@ -23,7 +23,7 @@ const AdminLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-dark-primary text-light-primary">
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-dark-secondary transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-dark-secondary transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:relative lg:inset-0`} >
         <div className="flex items-center justify-center h-16 bg-dark-primary">
           <h1 className="text-2xl font-display font-bold text-gold"><a href="#"><img src={logo} alt="AN Logo" className="h-10 w-auto" /></a></h1>
         </div>
