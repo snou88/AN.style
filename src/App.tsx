@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider, useCart } from './context/CartContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -6,13 +7,14 @@ import Home from './pages/Home';
 import ProductsList from './pages/ProductsList';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
+import AdminLayout from './admin/layouts/AdminLayout';
 
 interface Route {
   page: string;
   data?: string;
 }
 
-function AppContent() {
+function PublicApp() {
   const [currentRoute, setCurrentRoute] = useState<Route>({ page: 'home' });
   const { getTotalItems } = useCart();
 
@@ -63,7 +65,12 @@ function AppContent() {
 function App() {
   return (
     <CartProvider>
-      <AppContent />
+      <Router>
+        <Routes>
+          <Route path="/admin/*" element={<AdminLayout />} />
+          <Route path="/*" element={<PublicApp />} />
+        </Routes>
+      </Router>
     </CartProvider>
   );
 }

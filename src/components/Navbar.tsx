@@ -3,7 +3,7 @@ import { useState } from 'react';
 import logo from '../images/an.png';
 interface NavbarProps {
   cartItemsCount: number;
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, data?: string) => void;
   currentPage: string;
 }
 

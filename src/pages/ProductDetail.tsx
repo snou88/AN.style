@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 
 interface ProductDetailProps {
   productId: string;
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, data?: string) => void;
 }
 
 export default function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
