@@ -1,6 +1,6 @@
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useState } from 'react';
-
+import logo from '../images/an.png';
 interface NavbarProps {
   cartItemsCount: number;
   onNavigate: (page: string) => void;
@@ -14,7 +14,7 @@ export default function Navbar({ cartItemsCount, onNavigate, currentPage }: Navb
     { name: 'Accueil', id: 'home' },
     { name: 'Homme', id: 'products-homme' },
     { name: 'Femme', id: 'products-femme' },
-    { name: 'Accessoires', id: 'products-accessoires' },
+    { name: 'Unisexe', id: 'products-accessoires' },
   ];
 
   return (
@@ -25,7 +25,7 @@ export default function Navbar({ cartItemsCount, onNavigate, currentPage }: Navb
             onClick={() => onNavigate('home')}
             className="font-display text-3xl font-bold text-gold hover:text-gold-hover transition-colors duration-300"
           >
-            AN Style
+            <a href="#"><img src={logo} alt="AN Logo" className="h-10 w-auto" /></a>
           </button>
 
           <div className="hidden md:flex items-center space-x-8">

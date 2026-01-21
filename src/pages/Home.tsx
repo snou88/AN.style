@@ -1,5 +1,6 @@
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { products } from '../data/products';
+import logo from '../images/an_w.png';
 
 interface HomeProps {
   onNavigate: (page: string, data?: string) => void;
@@ -45,11 +46,11 @@ export default function Home({ onNavigate }: HomeProps) {
               Luxury Fashion
             </span>
           </div>
-          <h1 className="font-display text-6xl md:text-8xl font-bold text-light-primary mb-6 leading-tight">
-            AN Style
+          <h1 className="font-display text-6xl md:text-8xl font-bold text-light-primary mb-6 leading-tight flex justify-center">
+            <img src={logo} alt="AN_w Logo" className="h-20 w-auto" />
           </h1>
           <p className="text-xl md:text-2xl text-light-gray mb-12 max-w-2xl mx-auto leading-relaxed">
-            L'élégance redéfinie. Découvrez notre collection exclusive de vêtements premium.
+            L'élégance redéfinie. Découvrez notre collection exclusive de vêtements Streetwear premium.
           </p>
           <button
             onClick={() => onNavigate('products-all')}
@@ -60,7 +61,8 @@ export default function Home({ onNavigate }: HomeProps) {
           </button>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce flex flex-col justify-center items-center space-y-2">
+          <div className="text-gold text-sm font-medium">SCROLL</div>
           <div className="w-6 h-10 border-2 border-gold/50 rounded-full flex items-start justify-center p-2">
             <div className="w-1 h-3 bg-gold rounded-full"></div>
           </div>
@@ -172,6 +174,37 @@ export default function Home({ onNavigate }: HomeProps) {
               <ArrowRight className="ml-2 w-5 h-5" />
             </button>
           </div>
+        </div>
+      </section>
+
+      <section className="bg-dark-secondary py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl font-display font-bold text-gold mb-8">Contactez-nous</h2>
+          <form className="space-y-6">
+            <div>
+              <label className="block text-light-primary mb-2">Nom complet</label>
+              <input
+                type="text"
+                className="w-full bg-dark-primary border border-gold/20 text-light-primary px-4 py-3 focus:outline-none focus:border-gold transition-colors duration-300"
+              />
+            </div>
+            <div>
+              <label className="block text-light-primary mb-2">Email</label>
+              <input
+                type="email"
+                className="w-full bg-dark-primary border border-gold/20 text-light-primary px-4 py-3 focus:outline-none focus:border-gold transition-colors duration-300"
+              />
+            </div>
+            <div>
+              <label className="block text-light-primary mb-2">Message</label>
+              <textarea
+                className="w-full bg-dark-primary border border-gold/20 text-light-primary px-4 py-3 focus:outline-none focus:border-gold transition-colors duration-300 h-32 resize-none"
+              ></textarea>
+            </div>
+            <button className="w-full bg-gold hover:bg-gold-hover text-dark-primary py-3 font-medium transition-colors duration-300">
+              Envoyer
+            </button>
+          </form>
         </div>
       </section>
     </div>

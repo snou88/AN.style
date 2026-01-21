@@ -15,7 +15,7 @@ export default function ProductsList({ onNavigate, category }: ProductsListProps
     all: 'Tous les produits',
     homme: 'Collection Homme',
     femme: 'Collection Femme',
-    accessoires: 'Accessoires',
+    accessoires: 'Unisexe',
   };
 
   const filteredProducts = useMemo(() => {
