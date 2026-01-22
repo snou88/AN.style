@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, ShoppingCart, Check } from 'lucide-react';
-import { products } from '../data/products';
+import { fetchProductById } from '../services/api';
 import { useCart } from '../context/CartContext';
 
 interface ProductDetailProps {
@@ -9,11 +9,34 @@ interface ProductDetailProps {
 }
 
 export default function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
-  const product = products.find((p) => p.id === productId);
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const result = await fetchProductById(productId);
+        setProduct(result.data);
+      } catch (error) {
+        console.error('Failed to load product:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProduct();
+  }, [productId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-dark-primary flex items-center justify-center">
+        <div className="text-light-gray">Chargement du produit...</div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -36,7 +59,7 @@ export default function ProductDetail({ productId, onNavigate }: ProductDetailPr
       alert('Veuillez sélectionner une taille');
       return;
     }
-    addToCart(product, selectedSize, quantity);
+    addToCart({ ...product, id: product._id }, selectedSize, quantity);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };

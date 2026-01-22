@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Filter, X } from 'lucide-react';
-import { products } from '../data/products';
+import { fetchProducts } from '../services/api';
 
 interface ProductsListProps {
   onNavigate: (page: string, data?: string) => void;
@@ -8,8 +8,24 @@ interface ProductsListProps {
 }
 
 export default function ProductsList({ onNavigate, category }: ProductsListProps) {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [priceFilter, setPriceFilter] = useState<string>('all');
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const result = await fetchProducts();
+        setProducts(result.data);
+      } catch (error) {
+        console.error('Failed to load products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+  }, []);
 
   const categoryNames: Record<string, string> = {
     all: 'Tous les produits',
@@ -36,7 +52,15 @@ export default function ProductsList({ onNavigate, category }: ProductsListProps
     }
 
     return filtered;
-  }, [category, priceFilter]);
+  }, [products, category, priceFilter]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-dark-primary pt-32 pb-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div className="text-light-gray">Chargement des produits...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-dark-primary pt-32 pb-16 px-4 sm:px-6 lg:px-8">

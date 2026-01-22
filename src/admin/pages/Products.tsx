@@ -1,15 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Eye } from 'lucide-react';
-import { mockProducts } from '../data/mockData';
+import { fetchProducts, deleteProduct } from '../../services/api';
 
 const Products: React.FC = () => {
-  const [products, setProducts] = useState(mockProducts);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleDelete = (id: number) => {
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const result = await fetchProducts();
+        setProducts(result.data);
+      } catch (error) {
+        console.error('Failed to load products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+  }, []);
+
+  const handleDelete = async (id: string) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      setProducts(products.filter(p => p.id !== id));
+      try {
+        await deleteProduct(id);
+        setProducts(products.filter(p => p._id !== id));
+      } catch (error) {
+        console.error('Failed to delete product:', error);
+        alert('Erreur lors de la suppression du produit');
+      }
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-light-gray">Chargement des produits...</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -36,21 +65,21 @@ const Products: React.FC = () => {
             </thead>
             <tbody>
               {products.map((product) => (
-                <tr key={product.id} className="border-b border-dark-primary hover:bg-dark-primary transition-colors">
+                <tr key={product._id} className="border-b border-dark-primary hover:bg-dark-primary transition-colors">
                   <td className="py-3">
                     <img src={product.images[0]} alt={product.name} className="w-12 h-12 object-cover rounded" />
                   </td>
                   <td className="py-3 text-light-primary">{product.name}</td>
                   <td className="py-3 text-light-primary">
-                    €{product.promoPrice || product.price}
-                    {product.promoPrice && <span className="text-light-gray line-through ml-2">€{product.price}</span>}
+                    €{product.originalPrice || product.price}
+                    {product.originalPrice && <span className="text-light-gray line-through ml-2">€{product.price}</span>}
                   </td>
                   <td className="py-3 text-light-primary">{product.stock}</td>
                   <td className="py-3">
                     <span className={`px-2 py-1 rounded-full text-xs ${
-                      product.status === 'active' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                      product.stock > 0 ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
                     }`}>
-                      {product.status === 'active' ? 'Actif' : 'Inactif'}
+                      {product.stock > 0 ? 'En stock' : 'Rupture'}
                     </span>
                   </td>
                   <td className="py-3">
@@ -62,7 +91,7 @@ const Products: React.FC = () => {
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(product.id)}
+                        onClick={() => handleDelete(product._id)}
                         className="text-red-400 hover:text-red-300"
                       >
                         <Trash2 className="w-4 h-4" />

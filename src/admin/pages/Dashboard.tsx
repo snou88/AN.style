@@ -1,34 +1,62 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DollarSign, ShoppingCart, Package, Users, TrendingUp } from 'lucide-react';
-import { mockKPIs, mockOrders } from '../data/mockData';
+import { fetchDashboardKPIs, fetchRecentOrders } from '../../services/api';
 
 const Dashboard: React.FC = () => {
-  const kpis = [
+  const [kpisData, setKpisData] = useState<any>(null);
+  const [ordersData, setOrdersData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        const kpis = await fetchDashboardKPIs();
+        const orders = await fetchRecentOrders(5);
+        setKpisData(kpis.data);
+        setOrdersData(orders.data);
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadDashboardData();
+  }, []);
+
+  const kpis = kpisData ? [
     {
       title: 'Chiffre d\'affaires',
-      value: `€${mockKPIs.revenue.toLocaleString()}`,
+      value: `€${(kpisData.revenue || 0).toLocaleString()}`,
       icon: DollarSign,
       change: '+12.5%',
     },
     {
       title: 'Commandes',
-      value: mockKPIs.orders.toString(),
+      value: (kpisData.totalOrders || 0).toString(),
       icon: ShoppingCart,
       change: '+8.2%',
     },
     {
       title: 'Produits',
-      value: mockKPIs.products.toString(),
+      value: (kpisData.totalProducts || 0).toString(),
       icon: Package,
       change: '+2.1%',
     },
     {
       title: 'Clients',
-      value: mockKPIs.customers.toString(),
+      value: (kpisData.totalCustomers || 0).toString(),
       icon: Users,
       change: '+15.3%',
     },
-  ];
+  ] : [];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-light-gray">Chargement du dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -74,17 +102,18 @@ const Dashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {mockOrders.slice(0, 5).map((order) => (
-                <tr key={order.id} className="border-b border-dark-primary hover:bg-dark-primary transition-colors">
-                  <td className="py-2 md:py-3 text-light-primary text-xs md:text-sm">{order.id}</td>
-                  <td className="py-2 md:py-3 text-light-primary text-xs md:text-sm">{order.customer}</td>
-                  <td className="py-2 md:py-3 text-light-gray text-xs md:text-sm">{order.date}</td>
+              {ordersData.map((order) => (
+                <tr key={order._id} className="border-b border-dark-primary hover:bg-dark-primary transition-colors">
+                  <td className="py-2 md:py-3 text-light-primary text-xs md:text-sm">{order._id.slice(-8)}</td>
+                  <td className="py-2 md:py-3 text-light-primary text-xs md:text-sm">{order.customer || order.email}</td>
+                  <td className="py-2 md:py-3 text-light-gray text-xs md:text-sm">{new Date(order.orderDate).toLocaleDateString()}</td>
                   <td className="py-2 md:py-3 text-light-primary text-xs md:text-sm">€{order.total}</td>
                   <td className="py-2 md:py-3">
                     <span className={`px-1 md:px-2 py-1 rounded-full text-xs ${
-                      order.status === 'paid' ? 'bg-green-600 text-white' :
+                      order.status === 'delivered' ? 'bg-green-600 text-white' :
                       order.status === 'pending' ? 'bg-yellow-600 text-white' :
-                      'bg-blue-600 text-white'
+                      order.status === 'shipped' ? 'bg-blue-600 text-white' :
+                      'bg-gray-600 text-white'
                     }`}>
                       {order.status}
                     </span>

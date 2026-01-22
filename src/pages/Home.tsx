@@ -1,5 +1,6 @@
 import { ArrowRight, Sparkles } from 'lucide-react';
-import { products } from '../data/products';
+import { useEffect, useState } from 'react';
+import { fetchProducts } from '../services/api';
 import logo from '../images/an_w.png';
 
 interface HomeProps {
@@ -7,7 +8,23 @@ interface HomeProps {
 }
 
 export default function Home({ onNavigate }: HomeProps) {
-  const popularProducts = products.slice(0, 6);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const result = await fetchProducts();
+        setProducts(result.data.slice(0, 6));
+      } catch (error) {
+        console.error('Failed to load products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+  }, []);
+
   const categories = [
     {
       id: 'homme',
@@ -120,50 +137,54 @@ export default function Home({ onNavigate }: HomeProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {popularProducts.map((product) => (
-              <button
-                key={product.id}
-                onClick={() => onNavigate('product-detail', product.id)}
-                className="group bg-dark-primary overflow-hidden hover:shadow-2xl hover:shadow-gold/20 transition-all duration-300"
-              >
-                <div className="relative overflow-hidden aspect-[3/4]">
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  {product.badge && (
-                    <div className="absolute top-4 right-4 bg-gold text-dark-primary px-3 py-1 text-sm font-bold">
-                      {product.badge}
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-dark-primary/0 group-hover:bg-dark-primary/30 transition-colors duration-300 flex items-center justify-center">
-                    <span className="text-light-primary font-medium opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                      Voir le produit
-                    </span>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-light-primary font-semibold text-lg mb-2 group-hover:text-gold transition-colors duration-300">
-                    {product.name}
-                  </h3>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-gold font-bold text-xl">
-                        {product.price}€
+          {loading ? (
+            <div className="text-center text-light-gray">Chargement des produits...</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.map((product) => (
+                <button
+                  key={product._id}
+                  onClick={() => onNavigate('product-detail', product._id)}
+                  className="group bg-dark-primary overflow-hidden hover:shadow-2xl hover:shadow-gold/20 transition-all duration-300"
+                >
+                  <div className="relative overflow-hidden aspect-[3/4]">
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    {product.badge && (
+                      <div className="absolute top-4 right-4 bg-gold text-dark-primary px-3 py-1 text-sm font-bold">
+                        {product.badge}
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-dark-primary/0 group-hover:bg-dark-primary/30 transition-colors duration-300 flex items-center justify-center">
+                      <span className="text-light-primary font-medium opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                        Voir le produit
                       </span>
-                      {product.originalPrice && (
-                        <span className="text-light-gray text-sm line-through ml-2">
-                          {product.originalPrice}€
-                        </span>
-                      )}
                     </div>
                   </div>
-                </div>
-              </button>
-            ))}
-          </div>
+                  <div className="p-6">
+                    <h3 className="text-light-primary font-semibold text-lg mb-2 group-hover:text-gold transition-colors duration-300">
+                      {product.name}
+                    </h3>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-gold font-bold text-xl">
+                          {product.price}€
+                        </span>
+                        {product.originalPrice && (
+                          <span className="text-light-gray text-sm line-through ml-2">
+                            {product.originalPrice}€
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="text-center mt-12">
             <button
