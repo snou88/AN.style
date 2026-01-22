@@ -27,7 +27,7 @@ const AdminLayout: React.FC = () => {
         <div className="flex items-center justify-center h-16 bg-dark-primary">
           <h1 className="text-2xl font-display font-bold text-gold"><a href="#"><img src={logo} alt="AN Logo" className="h-10 w-auto" /></a></h1>
         </div>
-        <nav className="mt-8">
+        <nav className="">
           {menuItems.map((item) => (
             <Link
               key={item.path}
@@ -47,7 +47,7 @@ const AdminLayout: React.FC = () => {
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-64 lg:relative bottom-[316px]">
+      <div className="lg:pl-64 lg:relative bottom-[285px]">
         {/* Header */}
         <header className="bg-dark-secondary shadow-sm">
           <div className="flex items-center justify-between px-6 py-4">
